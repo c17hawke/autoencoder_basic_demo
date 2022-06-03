@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 def get_data(normalize_by=255, N=5000):
@@ -71,7 +72,9 @@ if __name__ == '__main__':
     X_train, y_train, X_valid, y_valid, X_test, y_test = get_data()
     model = get_model()
     model.compile(loss="mse", optimizer="nadam")
-    history = model.fit(X_train, X_train, epochs=1, validation_data=(X_valid, X_valid))
+    history = model.fit(X_train, X_train, epochs=20, validation_data=(X_valid, X_valid))
 
     fig = plot_results(input_imgs=X_valid, model=model)
+    os.makedirs("results", exist_ok=True)
+    plt.savefig("results/out_stacked_AE.jpg")
     plt.show()
