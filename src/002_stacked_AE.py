@@ -49,10 +49,29 @@ def get_model(SEED=42):
 
     return stacked_autoencoder
 
-def plot_results():
+def plot_results(input_imgs, model, N=5, CMAP="binary"):
 
-    pass
+    valid_imgs = input_imgs[:N]
+    reconstructed_imgs = model.predict(valid_imgs)
+
+    fig, axs = plt.subplots(N, 2, figsize=(7, 14))
+    for idx, (input_img, reconstructed_img) in enumerate(zip(valid_imgs, reconstructed_imgs)):
+        if idx == 0:
+            axs[idx, 0].set_title("input images")
+            axs[idx, 1].set_title("reconstructed images")
+        axs[idx, 0].imshow(input_img, cmap=CMAP)
+        axs[idx, 0].axis("off")
+        axs[idx, 1].imshow(reconstructed_img, cmap=CMAP)
+        axs[idx, 1].axis("off")
+
+    return fig
 
 
 if __name__ == '__main__':
     X_train, y_train, X_valid, y_valid, X_test, y_test = get_data()
+    model = get_model()
+    model.compile(loss="mse", optimizer="nadam")
+    history = model.fit(X_train, X_train, epochs=1, validation_data=(X_valid, X_valid))
+
+    fig = plot_results(input_imgs=X_valid, model=model)
+    plt.show()
