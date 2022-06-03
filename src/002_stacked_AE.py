@@ -23,9 +23,31 @@ def get_data(normalize_by=255, N=5000):
     y_train, y_valid = y_train_full[:-N], y_train_full[-N:]
     return X_train, y_train, X_valid, y_valid, X_test, y_test
 
-def get_model():
+def get_model(SEED=42):
 
-    pass
+    tf.random.set_seed(SEED)
+
+    LAYERS_encoder = [
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(30, activation="relu")
+    ]
+    stacked_encoder = tf.keras.Sequential(LAYERS_encoder)
+
+    LAYERS_decoder = [
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(28*28),
+        tf.keras.layers.Reshape([28,28])
+    ]
+
+    stacked_decoder = tf.keras.Sequential(LAYERS_decoder)
+
+    stacked_autoencoder = tf.keras.Sequential([
+        stacked_encoder,
+        stacked_decoder
+    ])
+
+    return stacked_autoencoder
 
 def plot_results():
 
